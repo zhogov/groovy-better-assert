@@ -1,0 +1,3 @@
+moduleName=Groovy 'assert' conditions get more verbose error messages
+moduleVersion=1.01
+staticExtensionClasses=com.github.zhogov.VerboseAssertMessagesExtension

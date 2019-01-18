@@ -1,0 +1,65 @@
+plugins {
+    id "java"
+    id "maven-publish"
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+def package_version = "1.01"
+def group_id = "com.github.zhogov"
+def artifact_id = "groovy-verbose-assert-messages"
+
+group = group_id
+version = package_version
+
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
+    publications = ['MyPublication']
+
+    pkg {
+        repo = "BintrayMavenRepo"
+        name = artifact_id
+        desc = "Groovy 'assert' conditions get more verbose error messages"
+        licenses = ['Apache-2.0']
+
+        def website = 'https://github.com/zhogov/groovy-verbose-assert-messages'
+        vcsUrl = website
+        websiteUrl = website
+        issueTrackerUrl = "$website/issues"
+
+        version {
+            name = "$package_version"
+            desc = "Groovy 'assert' conditions get more verbose error messages"
+            released  = new Date()
+        }
+    }
+}
+
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.java.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact javadocJar
+            artifact sourcesJar
+            groupId group_id
+            artifactId artifact_id
+            version "$package_version"
+        }
+    }
+}
